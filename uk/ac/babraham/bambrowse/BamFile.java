@@ -1,10 +1,16 @@
 package uk.ac.babraham.bambrowse;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
+import net.sf.samtools.SAMFileSpan;
+import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMRecordIterator;
 
 public class BamFile {
 
@@ -24,14 +30,14 @@ public class BamFile {
 		
 		SAMFileReader.setDefaultValidationStringency(SAMFileReader.ValidationStringency.SILENT);
 
-		reader = new SAMFileReader(file); 		
 		
-		if (reader.hasIndex()) {
-			System.err.println("We have an index");
-		}
-		else {
-			System.err.println("We don't have an index");
-		}
+		InputStream is = new FileInputStream(file);
+		
+		
+//		is.skip(1000);
+		
+		
+		reader = new SAMFileReader(is); 				
 		
 		
 		for (BamFileListener l : listeners) {
@@ -39,6 +45,14 @@ public class BamFile {
 		}
 			
 	}
+	
+	public SAMFileHeader getHeader () {
+		if (bamFile != null) {
+			return(reader.getFileHeader());
+		}
+		return null;
+	}
+	
 	
 	public void closeFile () {
 
